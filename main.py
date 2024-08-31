@@ -27,7 +27,7 @@ if not cap.isOpened():
 # Obtener el número total de cuadros en el video
 total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
-frame_interval = 5  # Leer cada 30 cuadros
+frame_interval = 6  # Leer cada 30 cuadros
 frame_count = 0
 
 numeros_pedidos = []
@@ -58,7 +58,7 @@ while frame_count < total_frames:
     imagen_blur = cv2.GaussianBlur(center_section , (3, 3), 0)
 
     # Aplicar binarización Otsu para segmentar el texto del fondo
-    _, imagen_bin = cv2.threshold(imagen_blur, 170, 255, cv2.THRESH_TRUNC)
+    _, imagen_bin = cv2.threshold(imagen_blur, 175, 255, cv2.THRESH_TRUNC)
 
     if platform.system() == "Windows":
         # Mostrar la imagen binarizada
