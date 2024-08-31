@@ -58,7 +58,7 @@ while frame_count < total_frames:
     imagen_blur = cv2.GaussianBlur(center_section , (3, 3), 0)
 
     # Aplicar binarización Otsu para segmentar el texto del fondo
-    _, imagen_bin = cv2.threshold(imagen_blur, 190, 255, cv2.THRESH_TRUNC)
+    _, imagen_bin = cv2.threshold(imagen_blur, 150, 255, cv2.THRESH_TRUNC)
 
     if platform.system() == "Windows":
         # Mostrar la imagen binarizada
