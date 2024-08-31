@@ -44,8 +44,8 @@ while frame_count < total_frames:
     height, width = gray.shape
 
     # Definir los porcentajes de recorte de la parte superior e inferior
-    recorte_superior = 0.15  # 25% de la parte superior
-    recorte_inferior = 0.25  # 25% de la parte inferior
+    recorte_superior = 0.25  # 25% de la parte superior
+    recorte_inferior = 0.15  # 25% de la parte inferior
 
     # Calcular las coordenadas para recortar la parte central
     start_row = int(height * recorte_superior)  # Inicio del recorte
