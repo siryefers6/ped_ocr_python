@@ -44,8 +44,8 @@ while frame_count < total_frames:
     height, width = gray.shape
 
     # Definir los porcentajes de recorte de la parte superior e inferior
-    recorte_superior = 0.05 # 25% de la parte superior
-    recorte_inferior = 0.30  # 25% de la parte inferior
+    recorte_superior = 0.15  # 25% de la parte superior
+    recorte_inferior = 0.25  # 25% de la parte inferior
 
     # Calcular las coordenadas para recortar la parte central
     start_row = int(height * recorte_superior)  # Inicio del recorte
@@ -58,7 +58,7 @@ while frame_count < total_frames:
     imagen_blur = cv2.GaussianBlur(center_section , (3, 3), 0)
 
     # Aplicar binarización Otsu para segmentar el texto del fondo
-    _, imagen_bin = cv2.threshold(imagen_blur, 140, 255, cv2.THRESH_TRUNC)
+    _, imagen_bin = cv2.threshold(imagen_blur, 170, 255, cv2.THRESH_TRUNC)
 
     if platform.system() == "Windows":
         # Mostrar la imagen binarizada
