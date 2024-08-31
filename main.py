@@ -45,7 +45,7 @@ while frame_count < total_frames:
 
     # Definir los porcentajes de recorte de la parte superior e inferior
     recorte_superior = 0.3  # 25% de la parte superior
-    recorte_inferior = 0.10  # 25% de la parte inferior
+    recorte_inferior = 0.05  # 25% de la parte inferior
 
     # Calcular las coordenadas para recortar la parte central
     start_row = int(height * recorte_superior)  # Inicio del recorte
