@@ -2,6 +2,7 @@
 
 # Ruta de la carpeta a monitorear
 DIRECTORIO="$(dirname "$(realpath "$0")")"
+DIRECTORIO_OCR="/sdcard/DCIM/Camera"
 
 # Archivo que guarda el nombre del último archivo más reciente
 ARCHIVO_ACTUAL="$DIRECTORIO/archivo_actual.txt"
@@ -12,7 +13,7 @@ INTERVALO=3
 # Bucle infinito para monitorear cambios
 while true; do
     # Detectar el archivo más reciente en la carpeta
-    ARCHIVO_MAS_RECIENTE=$(ls -t "$DIRECTORIO" | head -n 1)
+    ARCHIVO_MAS_RECIENTE=$(ls -t "$DIRECTORIO_OCR" | head -n 1)
 
     # Verificar si el archivo más reciente ha cambiado
     if [ -f "$ARCHIVO_ACTUAL" ]; then
