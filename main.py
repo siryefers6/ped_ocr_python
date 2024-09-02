@@ -98,7 +98,9 @@ cap.release()
 cv2.destroyAllWindows()
 
 # Guardar lista en archivo README.md y subir al repositorio
-guardar_subir_github(string_a_almacenar=lista_pedidos, path_archivo_destino='README.md')
+if len(numeros_pedidos) > 1:
+    guardar_subir_github(string_a_almacenar=lista_pedidos, path_archivo_destino='README.md')
+
 print(f'Pedidos detectados: {len(numeros_pedidos)}')
 print()
 
