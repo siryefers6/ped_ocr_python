@@ -24,7 +24,7 @@ if not cap.isOpened():
     print("Error al abrir el archivo de video")
     
     # Limpiar el contenido del archivo archivo_actual.txt
-    with open('ruta/a/archivo_actual.txt', 'w') as f:
+    with open('archivo_actual.txt', 'w') as f:
         f.write('')
         
     exit()
