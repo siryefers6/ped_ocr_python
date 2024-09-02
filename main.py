@@ -22,6 +22,11 @@ cap = cv2.VideoCapture(video_path)
 # Verificar si el video se ha abierto correctamente
 if not cap.isOpened():
     print("Error al abrir el archivo de video")
+    
+    # Limpiar el contenido del archivo archivo_actual.txt
+    with open('ruta/a/archivo_actual.txt', 'w') as f:
+        f.write('')
+        
     exit()
 
 # Obtener el número total de cuadros en el video
