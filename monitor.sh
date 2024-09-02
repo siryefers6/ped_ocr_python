@@ -32,7 +32,7 @@ while true; do
         # Ejecutar el script Python según la extensión del archivo
         if [ "$EXTENSION" == "mp4" ]; then
             python3 "$DIRECTORIO/main.py"
-        else
+        elif [ "$EXTENSION" == "jpg" ] || [ "$EXTENSION" == "png" ]; then
             python3 "$DIRECTORIO/ocr_documents.py"
         fi
     fi

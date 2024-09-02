@@ -32,6 +32,8 @@ frame_count = 0
 
 numeros_pedidos = []
 
+print(f'ARCHIVO DETECTADO: {video_path}')
+
 while frame_count < total_frames:
     cap.set(cv2.CAP_PROP_POS_FRAMES, frame_count)
     ret, frame = cap.read()
@@ -93,3 +95,5 @@ cv2.destroyAllWindows()
 # Guardar lista en archivo README.md y subir al repositorio
 guardar_subir_github(string_a_almacenar=lista_pedidos, path_archivo_destino='README.md')
 print(f'Pedidos detectados: {len(numeros_pedidos)}')
+print()
+
