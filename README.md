@@ -1,44 +1,14 @@
-  000 ,
+L
 
- 
+   LAS COD
 
-    
+18780 PAPEL FOTOC. CARTA 7S GR PREBA 900 HI MPOBITO   
 
-   
+16788 PAPE, POTOC CAAA 7S GR PIIBA 500 HU MPOSITO   
 
-  
+CIOS7BR CERODOR A AMNORCK PURE 250 ML BRIBA REFRESCANTE UND  C
 
-C S    C. 
+PEEP DESOOORIAME APWWRCK PURE 290 MM. FLORES DE MAQNOU D  C
 
-   N,
-
- 
-
-    L
-
-C        
-
-  S,   
-
-FS TT
-
-SSF OO C OF  BORO  S
-
-OO N OT 8 
-
- COA T O
-
-  
-
-    
-
- CO 
-
-  
-
-     L
-
- 
-
- 
+T 2
 
