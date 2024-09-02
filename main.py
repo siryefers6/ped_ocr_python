@@ -93,35 +93,3 @@ cv2.destroyAllWindows()
 # Guardar lista en archivo README.md y subir al repositorio
 guardar_subir_github(string_a_almacenar=lista_pedidos, path_archivo_destino='README.md')
 print(f'Pedidos detectados: {len(numeros_pedidos)}')
-
-# Pedidos del video pedidos.mp4
-# Pedido: 31602209
-# Pedido: 31602674
-# Pedido: 31603323
-# Pedido: 31603248
-# Pedido: 31603151
-# Pedido: 31602051
-# Pedido: 31602738
-# Pedido: 31601651
-# Pedido: 31602672
-# Pedido: 31602648
-# Pedido: 31599524
-# Pedido: 31589630
-# Pedido: 31448344
-# Pedido: 31588157
-# Pedido: 31602759
-# Pedido: 31603318
-# Pedido: 31603316
-# Pedido: 31600858
-# Pedido: 31600868
-# Pedido: 31603188
-# Pedido: 31603481
-# Pedido: 31603382
-# Pedido: 31581142
-# Pedido: 31603531
-# Pedido: 31599562
-# Pedido: 31603219
-# Pedido: 31602548
-# Pedido: 31602546
-# Pedido: 31602094
-# Pedido: 31602004
