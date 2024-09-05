@@ -32,7 +32,7 @@ if not cap.isOpened():
 # Obtener el número total de cuadros en el video
 total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
-frame_interval = 6  # Leer cada 30 cuadros
+frame_interval = 8  # Leer cada 8 cuadros
 frame_count = 0
 
 numeros_pedidos = []
