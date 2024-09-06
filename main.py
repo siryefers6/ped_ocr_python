@@ -2,105 +2,111 @@ import re, platform
 import cv2
 import pytesseract
 from functions import archivo_mas_reciente_carpeta, guardar_subir_github
-
+from multiprocessing import Process, Queue
 
 if platform.system() == "Windows":
-    # Solo se ejecuta si el sistema operativo es Windows
     pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-    video_path = 'pedidos.mp4'
-else:
-    video_path = archivo_mas_reciente_carpeta('/sdcard/DCIM/Camera')
+ 
+def process_video_segment(video_path, start_frame, end_frame, frame_interval, config, output_queue, segment_index):
+    cap = cv2.VideoCapture(video_path)
+    cap.set(cv2.CAP_PROP_POS_FRAMES, start_frame)
+    results = []
 
-
-# Configuración de Tesseract
-config = r'--oem 3 --psm 11 outputbase digits'
-
-
-# Crear un objeto de captura de video
-cap = cv2.VideoCapture(video_path)
-
-# Verificar si el video se ha abierto correctamente
-if not cap.isOpened():
-    print("Error al abrir el archivo de video")
-    
-    # Limpiar el contenido del archivo archivo_actual.txt
-    with open('archivo_actual.txt', 'w') as f:
-        f.write('')
-        
-    exit()
-
-# Obtener el número total de cuadros en el video
-total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-
-frame_interval = 8  # Leer cada 8 cuadros
-frame_count = 0
-
-numeros_pedidos = []
-
-print(f'ARCHIVO DETECTADO: {video_path}')
-
-while frame_count < total_frames:
-    cap.set(cv2.CAP_PROP_POS_FRAMES, frame_count)
-    ret, frame = cap.read()
-    if not ret:
-        break
-
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-    # Obtener las dimensiones de la imagen
-    height, width = gray.shape
-
-    # Definir los porcentajes de recorte de la parte superior e inferior
-    recorte_superior = 0.3  # 25% de la parte superior
-    recorte_inferior = 0.05  # 25% de la parte inferior
-
-    # Calcular las coordenadas para recortar la parte central
-    start_row = int(height * recorte_superior)  # Inicio del recorte
-    end_row = int(height * (1 - recorte_inferior))  # Fin del recorte
-
-    # Recortar la imagen para conservar solo la parte central
-    center_section = gray[start_row:end_row, :]
-    
-    # Aplicar un filtro de desenfoque gaussiano para suavizar la imagen
-    imagen_blur = cv2.GaussianBlur(center_section , (3, 3), 0)
-
-    # Aplicar binarización Otsu para segmentar el texto del fondo
-    _, imagen_bin = cv2.threshold(imagen_blur, 170, 255, cv2.THRESH_TRUNC)
-
-    if platform.system() == "Windows":
-        # Mostrar la imagen binarizada
-        cv2.imshow('Imagen Binarizada', imagen_bin)
-        # Opción para detener el video cuando se presiona una tecla
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+    while start_frame < end_frame:
+        cap.set(cv2.CAP_PROP_POS_FRAMES, start_frame)
+        ret, frame = cap.read()
+        if not ret:
             break
 
-    text = pytesseract.image_to_string(imagen_bin, config=config)
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        height, width = gray.shape
 
-    match = re.findall(r"3[0123]\d{6}", text)
-    number = ""
-    if match:
-        if len(match) > 1:
-            number = match[-1]
-        else:
-            number = match[0]
-        if number not in numeros_pedidos:
-            print(f"Pedido: {number}")
-            numeros_pedidos.append(number)
+        # Recorte y preprocesamiento
+        recorte_superior = 0.3
+        recorte_inferior = 0.05
+        start_row = int(height * recorte_superior)
+        end_row = int(height * (1 - recorte_inferior))
+        center_section = gray[start_row:end_row, :]
+        imagen_blur = cv2.GaussianBlur(center_section , (3, 3), 0)
+        _, imagen_bin = cv2.threshold(imagen_blur, 170, 255, cv2.THRESH_TRUNC)
 
-    frame_count += frame_interval
+        text = pytesseract.image_to_string(imagen_bin, config=config)
+        match = re.findall(r"3[0123]\d{6}", text)
 
-lista_pedidos = ""
-for num in numeros_pedidos:
-    lista_pedidos += num + '\n\n'
+        if match:
+            number = match[-1] if len(match) > 1 else match[0]
+            results.append((start_frame, number))
 
-# Liberar el objeto de captura y cerrar todas las ventanas
-cap.release()
-cv2.destroyAllWindows()
+        start_frame += frame_interval
 
-# Guardar lista en archivo README.md y subir al repositorio
-if len(numeros_pedidos) > 1:
-    guardar_subir_github(string_a_almacenar=lista_pedidos, path_archivo_destino='README.md')
+    cap.release()
+    output_queue.put((segment_index, results))
 
-print(f'Pedidos detectados: {len(numeros_pedidos)}')
-print()
+def main():
+    if platform.system() == "Windows":
+        video_path = 'pedidos.mp4'
+    else:
+        video_path = archivo_mas_reciente_carpeta('/sdcard/DCIM/Camera')
+
+    config = r'--oem 3 --psm 11 outputbase digits'
+    cap = cv2.VideoCapture(video_path)
+
+    if not cap.isOpened():
+        print("Error al abrir el archivo de video")
+        with open('archivo_actual.txt', 'w') as f:
+            f.write('')
+        exit()
+
+    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    frame_interval = 8
+    cap.release()
+
+    quarter_frame = total_frames // 4
+    output_queue = Queue()
+    processes = []
+
+    for i in range(4):
+        start_frame = i * quarter_frame
+        end_frame = (i + 1) * quarter_frame if i != 3 else total_frames
+        process = Process(target=process_video_segment, args=(video_path, start_frame, end_frame, frame_interval, config, output_queue, i))
+        processes.append(process)
+
+    for process in processes:
+        process.start()
+
+    for process in processes:
+        process.join()
+
+    # Recolectar y unir los resultados
+    all_results = []
+    while not output_queue.empty():
+        segment_index, results = output_queue.get()
+        all_results.extend(results)
+
+    # Ordenar los resultados por el índice de frame
+    all_results.sort(key=lambda x: x[0])
+
+    # Extraer los números de pedidos en orden de aparición
+    final_pedidos = []
+    for _, pedido in all_results:
+        if pedido not in final_pedidos:
+            final_pedidos.append(pedido)
+
+    lista_pedidos = ""
+    lista_pedidos_simple = ""
+    for num in final_pedidos:
+        lista_pedidos += num + '\n\n'
+        lista_pedidos_simple += num + '\n'
+
+    print(lista_pedidos_simple)
+
+    # Guardar lista en archivo README.md y subir al repositorio
+    if len(final_pedidos) > 1:
+        guardar_subir_github(string_a_almacenar=lista_pedidos, path_archivo_destino='README.md')
+
+    print(f'Pedidos detectados: {len(final_pedidos)}')
+    print()
+
+if __name__ == '__main__':
+    main()
 
