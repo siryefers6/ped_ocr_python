@@ -114,8 +114,6 @@ def main():
 
     print(f'Pedidos detectados: {len(final_pedidos)}')
     print("Detección Finalizada.")
-    print("==========================================================")
-    print()
 
 if __name__ == '__main__':
     main()
@@ -126,3 +124,4 @@ if __name__ == '__main__':
     execution_time = end_time - start_time
 
     print(f"Tiempo de ejecución: {execution_time} segundos")
+    print("==========================================================\n")
