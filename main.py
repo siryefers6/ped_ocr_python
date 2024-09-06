@@ -62,7 +62,7 @@ def main():
             f.write('')
         exit()
 
-    multiprocesos_activos = 6
+    multiprocesos_activos = 4
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     frame_interval = 7
     cap.release()
