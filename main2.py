@@ -2,7 +2,10 @@ import re, platform
 import cv2
 import pytesseract
 from functions import archivo_mas_reciente_carpeta, guardar_subir_github
+import time
 
+# Marca el inicio del tiempo
+start_time = time.time()
 
 if platform.system() == "Windows":
     # Solo se ejecuta si el sistema operativo es Windows
@@ -104,3 +107,10 @@ if len(numeros_pedidos) > 1:
 print(f'Pedidos detectados: {len(numeros_pedidos)}')
 print()
 
+# Marca el final del tiempo
+end_time = time.time()
+
+# Calcula el tiempo de ejecución
+execution_time = end_time - start_time
+
+print(f"Tiempo de ejecución: {execution_time} segundos")

@@ -1,8 +1,11 @@
-import re, platform
+import re, platform, time
+from multiprocessing import Process, Queue
 import cv2
 import pytesseract
 from functions import archivo_mas_reciente_carpeta, guardar_subir_github
-from multiprocessing import Process, Queue
+
+# Marca el inicio del tiempo
+start_time = time.time()
 
 if platform.system() == "Windows":
     pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
@@ -43,6 +46,8 @@ def process_video_segment(video_path, start_frame, end_frame, frame_interval, co
     output_queue.put((segment_index, results))
 
 def main():
+    print("Detección iniciada...")
+
     if platform.system() == "Windows":
         video_path = 'pedidos.mp4'
     else:
@@ -57,17 +62,18 @@ def main():
             f.write('')
         exit()
 
+    multiprocesos_activos = 6
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    frame_interval = 8
+    frame_interval = 7
     cap.release()
 
-    quarter_frame = total_frames // 4
+    quarter_frame = total_frames // multiprocesos_activos
     output_queue = Queue()
     processes = []
 
-    for i in range(4):
+    for i in range(multiprocesos_activos):
         start_frame = i * quarter_frame
-        end_frame = (i + 1) * quarter_frame if i != 3 else total_frames
+        end_frame = (i + 1) * quarter_frame if i != multiprocesos_activos-1 else total_frames
         process = Process(target=process_video_segment, args=(video_path, start_frame, end_frame, frame_interval, config, output_queue, i))
         processes.append(process)
 
@@ -99,14 +105,24 @@ def main():
         lista_pedidos_simple += num + '\n'
 
     print(lista_pedidos_simple)
+    print(f'Pedidos detectados: {len(final_pedidos)}')
+    print("----------------------------------------------------------\n")
 
     # Guardar lista en archivo README.md y subir al repositorio
     if len(final_pedidos) > 1:
         guardar_subir_github(string_a_almacenar=lista_pedidos, path_archivo_destino='README.md')
 
     print(f'Pedidos detectados: {len(final_pedidos)}')
+    print("Detección Finalizada.")
+    print("==========================================================")
     print()
 
 if __name__ == '__main__':
     main()
+    # Marca el final del tiempo
+    end_time = time.time()
 
+    # Calcula el tiempo de ejecución
+    execution_time = end_time - start_time
+
+    print(f"Tiempo de ejecución: {execution_time} segundos")
