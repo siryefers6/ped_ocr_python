@@ -33,7 +33,7 @@ def guardar_subir_github(string_a_almacenar: str, path_archivo_destino: str):
     print(f"Texto extraído y guardado en {path_archivo}")
 
     # Comando para añadir cambios al último commit y forzar el push
-    command = "git add . && git commit -m 'actualizado' && git push --force origin main"
+    command = "git add . && git commit -m 'actualizado' && git push"
 
     # Ejecutar el comando
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
